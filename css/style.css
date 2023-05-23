@@ -1,0 +1,171 @@
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html {
+    max-height: 100vh;
+}
+body{
+    background-color: #9fc294;
+}
+.wrapper {
+    display: flex;
+    padding-top: 100px;
+    
+}
+.profile {
+    font-size: 20px;
+}
+.hero {
+    width: 200px;
+    height: 200px;
+  
+    margin: 0 auto;
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero__head {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 25%, 0% 25%);
+    margin: 0 auto;
+    
+    cursor: pointer;
+    text-align: center;
+}
+.hero__head img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.hero__body {
+    clip-path: polygon(0% 25%, 100% 25%, 100% 40%, 0% 40%);
+    
+    margin: -402px auto 0;
+    
+    text-align: center;
+    
+    cursor: pointer;
+    
+}.hero__body img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.hero__legs {
+    clip-path: polygon(0% 40%, 100% 40%, 100% 100%, 0% 100%);
+ 
+    margin: -402px auto 0;
+    cursor: pointer;
+}
+.hero__legs img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+@media (max-width: 404px){
+    .hero{
+      width: 150px;
+      height: 150px;
+    }
+    .hero__body {
+        margin: -303px auto 0;
+    }
+    .hero__legs {
+        margin: -303px auto 0;
+    }
+}
+.bot {
+    width: 200px;
+    height: 430px;
+    position: relative;
+    margin: 0 auto;
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+    
+}
+.bot__info-attack {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 200;
+    text-align: center;
+    padding-top: 100px;
+    color: #faf605;
+}
+.bot__disabled {
+    display: none;
+}
+.bot__head {
+   
+    
+    margin: 0 auto;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 20%, 0% 20%);
+    cursor: pointer;
+    text-align: center;
+}
+.bot__head img {
+    max-width: 100%;
+    max-height: 100%;
+    
+}
+.bot__body {
+    
+    
+    margin: -402px auto 0;
+    clip-path: polygon(0% 20%, 100% 20%, 100% 48%, 0% 48%);
+    text-align: center;
+    
+    cursor: pointer;
+    
+}
+.bot__body img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.bot__legs {
+    clip-path: polygon(0% 48%, 100% 48%, 100% 100%, 0% 100%);
+    margin: -402px auto 0;
+    cursor: pointer;
+}
+
+.bot__legs img {
+    max-width: 100%;
+    max-height: 100%;
+}
+@media (max-width: 404px){
+    .bot{
+      width: 150px;
+      height: 150px;
+    }
+    .bot__body {
+        margin: -303px auto 0;
+    }
+    .bot__legs {
+        margin: -303px auto 0;
+    }
+}
+.battle__page {
+    margin-top: 185px;
+    display: block;
+    font-size: 24px;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+}
+.index {
+    margin-top: 250px;
+    display: block;
+    font-size: 24px;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+}
+.profile-battle {
+    display: none;
+}
+
