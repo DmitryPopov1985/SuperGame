@@ -62,7 +62,17 @@ body{
     max-width: 100%;
     max-height: 100%;
 }
-
+.user__info-attack {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 200;
+    padding-top: 196px;
+    padding-left: 107px;
+    color: #faf605;
+}
 
 @media (max-width: 404px){
     .hero{
@@ -150,7 +160,7 @@ body{
     }
 }
 .battle__page {
-    margin-top: 185px;
+    margin-top: 200px;
     display: block;
     font-size: 24px;
     color: #fff;

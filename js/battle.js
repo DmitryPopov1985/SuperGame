@@ -1,8 +1,8 @@
 class Bot {
-    constructor( ) {
-        this.health = Math.ceil((Math.random()*(600 -60) + 60)/10)*10
-            this.attack = Math.ceil(Math.random()*10)
-            this.dexterity = Math.ceil(Math.random()*10)
+    constructor() {
+        this.health = Math.ceil((Math.random() * (160 - 60) + 60) / 10) * 10
+        this.attack = Math.ceil(Math.random() * 10)
+        this.dexterity = Math.ceil(Math.random() * 10)
     }
     attached(damage) {
         this.health = this.health - damage
@@ -18,6 +18,7 @@ userHP.innerHTML = user.getHealth()
 
 
 const botProfile = document.querySelector('.js-bot')
+const heroProfile = document.querySelector('.hero')
 let [botHealth, botHead, botBody, botLegs] = [...botProfile.children]
 
 botHealth.innerHTML = bot.health
@@ -29,73 +30,90 @@ console.log(bot.dexterity)
 
 const exp = Math.ceil(bot.health * .3)
 
-//====================================================================
-botHead.addEventListener('click', () => {
-    const kf = (max, min) => {
-        const maxAttack = max + user.attack
-        const minAttack = min + user.attack
-        return Math.random() * (maxAttack - minAttack) + minAttack
-    }
+function kf(max, min) {
+    const maxAttack = max + user.attack
+    const minAttack = min + user.attack
+    return Math.random() * (maxAttack - minAttack) + minAttack
+}
+function createDamage(a,b) {
+    critUser = Math.ceil(Math.random() * 100)
+    botDamage = Math.ceil(Math.random() * kf(a, b))
+    userDamage = Math.ceil(Math.random() * (30 - 5) + 5) - user.protection
+    dmg = { critUser, botDamage, userDamage }
+    return dmg
+}
 
-    const critUser = Math.ceil(Math.random()*100)
-    const headDamage = Math.ceil(kf(40, 20))
-    const userDamage = Math.ceil(Math.random() * (40 - 5) + 5) - user.protection
+function createDodge() {
+    dodge = Math.ceil(Math.random() * 100)
+    userDodge = Math.ceil(Math.random() * 100)
+    return ddg = { dodge, userDodge }
+}
+function chanceToHit(c) {
+    return chance = c - bot.dexterity + user.dexterity + user.accuracy
+}
+function userDead() {
+    user.gameOver()
+    botProfile.classList.add('bot__disabled')
+    document.querySelector('.index').textContent = 'Ты проиграл...'
+}
+function createDiv(target, nameClass, text) {
+    let newDiv = document.createElement('div')
+    newDiv.classList.add(nameClass)
+    newDiv.innerHTML = text
+    target.appendChild(newDiv)
+    setTimeout(() => {
+        newDiv.classList.remove(nameClass)
+        newDiv.innerHTML = ''
+    }, 300)
+}
+function updateHealth() {
+    user.setHealth()
+            user.getHealth()
+            userHP.innerHTML = user.getHealth()
+}
+
+
+function logicsBattle() {
     if (user.health <= 0) {
-        user.gameOver()
-        botProfile.classList.add('bot__disabled')
-        document.querySelector('.index').textContent = 'Ты проиграл...'
-    } else if (bot.health > 0) {
-        const dodge = Math.ceil(Math.random() * 100)
-        if (dodge >= 70 - bot.dexterity + user.dexterity + user.accuracy) {
-            let newDiv = document.createElement('div')
-            newDiv.classList.add('bot__info-attack')
-            newDiv.innerHTML = 'Промах'
-            botProfile.appendChild(newDiv)
-            user.atached(userDamage)
-            user.setHealth()
-            user.getHealth()
-            userHP.innerHTML = user.getHealth()
-            setTimeout(() => {
-                newDiv.classList.remove('bot__info-attack')
-                newDiv.innerHTML = ''
-            }, 300)
+        userDead()
+    }
+    else if (bot.health > 0) {
+        createDodge()
+        if (ddg.dodge >= chance) {
+            createDiv(botProfile, 'bot__info-attack', 'Промах')
+            if (ddg.userDodge >= 80) {
+                createDiv(heroProfile, 'user__info-attack', 'Промах')
+            } else {
+                user.atached(dmg.userDamage)
+                createDiv(heroProfile, 'user__info-attack', `- ${dmg.userDamage}`)
+            }
+            updateHealth()
         } else {
-            if (critUser >= 100 - user.critical) {
-            bot.attached(headDamage * 2)
-            user.atached(userDamage)
-            user.setHealth()
-            user.getHealth()
-            let newDiv = document.createElement('div')
-            newDiv.classList.add('bot__info-attack')
-            newDiv.innerHTML = 'Крит ' + '-' + headDamage*2
-            botProfile.appendChild(newDiv)
-            setTimeout(() => {
-                newDiv.classList.remove('bot__info-attack')
-                newDiv.innerHTML = ''
-            }, 300)
-            userHP.innerHTML = user.getHealth()
-            userHealth.innerHTML = 'Здоровье:' + Number(localStorage.getItem('health'))
-            botHealth.innerHTML = bot.health
-        } else {
-            bot.attached(headDamage)
-            user.atached(userDamage)
-            user.setHealth()
-            user.getHealth()
-            let newDiv = document.createElement('div')
-            newDiv.classList.add('bot__info-attack')
-            newDiv.innerHTML = '-' + headDamage
-            botProfile.appendChild(newDiv)
-            setTimeout(() => {
-                newDiv.classList.remove('bot__info-attack')
-                newDiv.innerHTML = ''
-            }, 300)
-            userHP.innerHTML = user.getHealth()
-            userHealth.innerHTML = 'Здоровье:' + Number(localStorage.getItem('health'))
-            botHealth.innerHTML = bot.health
+            if (dmg.critUser >= 100 - user.critical) {
+                bot.attached(dmg.botDamage * 2)
+                if (ddg.userDodge >= 80) {
+                    createDiv(heroProfile, 'user__info-attack', 'Промах')
+                } else {
+                    user.atached(dmg.userDamage)
+                    createDiv(heroProfile, 'user__info-attack', `- ${dmg.userDamage}`)
+                }
+                botHealth.innerHTML = bot.health
+                updateHealth()
+                createDiv(botProfile, 'bot__info-attack', `Крит  - ${dmg.botDamage * 2}`)
+                
+            } else {
+                bot.attached(dmg.botDamage)
+                if (ddg.userDodge >= 80) {
+                    createDiv(heroProfile, 'user__info-attack', 'Промах')
+                } else {
+                    user.atached(dmg.userDamage)
+                    createDiv(heroProfile, 'user__info-attack', `- ${dmg.userDamage}`)
+                }
+                botHealth.innerHTML = bot.health
+                updateHealth()
+                createDiv(botProfile, 'bot__info-attack', `- ${dmg.botDamage}`)    
+            }
         }
-            
-        }
-
         return
     } else {
         user.win(3, exp)
@@ -107,200 +125,17 @@ botHead.addEventListener('click', () => {
         user.getLevel()
         botProfile.classList.add('bot__disabled')
         document.querySelector('.index').textContent = 'Победа!!!'
-        userLevel.innerHTML = 'Уровень:' + Number(localStorage.getItem('level'))
-        userBalance.innerHTML = 'Баланс:' + Number(localStorage.getItem('balance'))
-        userScore.innerHTML = 'Опыт:' + Number(localStorage.getItem('score'))
-    }
-
-
-})
-
-
-// =======================================================================================
-botBody.addEventListener('click', () => {
-    const kf = (max, min) => {
-        const maxAttack = max + user.attack
-        const minAttack = min + user.attack
-        return Math.random() * (maxAttack - minAttack) + minAttack
-    }
-
-    const critUser = Math.ceil(Math.random()*100)
-    const bodyDamage = Math.ceil(Math.random() * kf(20, 10))
-    const userDamage = Math.ceil(Math.random() * (40 - 5) + 5) - user.protection
-    if (user.health <= 0) {
-        user.gameOver()
-        botProfile.classList.add('bot__disabled')
-        document.querySelector('.index').textContent = 'Ты проиграл...'
 
     }
-    else if (bot.health > 0) {
-        const dodge = Math.ceil(Math.random() * 100)
-        if (dodge >= 91 - bot.dexterity + user.dexterity + user.accuracy) {
-            let newDiv = document.createElement('div')
-            newDiv.classList.add('bot__info-attack')
-            newDiv.innerHTML = 'Промах'
-            botProfile.appendChild(newDiv)
-            user.atached(userDamage)
-            user.setHealth()
-            user.getHealth()
-            userHP.innerHTML = user.getHealth()
-            setTimeout(() => {
-                newDiv.classList.remove('bot__info-attack')
-                newDiv.innerHTML = ''
-            }, 300)
-        } else {
-            if (critUser >= 100 - user.critical) {
-                bot.attached(bodyDamage * 2)
-                user.atached(userDamage)
-                botHealth.innerHTML = bot.health
-                user.setHealth()
-                user.getHealth()
-                let newDiv = document.createElement('div')
-                newDiv.classList.add('bot__info-attack')
-                newDiv.innerHTML = 'Крит' + '-' + bodyDamage*2
-                botProfile.appendChild(newDiv)
-               
-                setTimeout(() => {
-                    newDiv.classList.remove('bot__info-attack')
-                    newDiv.innerHTML = ''
-                }, 300)
-                userHP.innerHTML = user.getHealth()
-                userHealth.innerHTML = 'Здоровье:' + Number(localStorage.getItem('health'))
-            } else {
-                bot.attached(bodyDamage)
-                user.atached(userDamage)
-                botHealth.innerHTML = bot.health
-                user.setHealth()
-                user.getHealth()
-                let newDiv = document.createElement('div')
-                newDiv.classList.add('bot__info-attack')
-                newDiv.innerHTML = '-' + bodyDamage
-                botProfile.appendChild(newDiv)
-               
-                setTimeout(() => {
-                    newDiv.classList.remove('bot__info-attack')
-                    newDiv.innerHTML = ''
-                }, 300)
-                userHP.innerHTML = user.getHealth()
-                userHealth.innerHTML = 'Здоровье:' + Number(localStorage.getItem('health'))
-            }
-          
-        }
-
-        return
-    } else {
-        user.win(3,exp)
-        user.setBalance()
-        user.getBalance()
-        user.setScore()
-        user.getScore()
-        user.setLevel()
-        user.getLevel()
-        botProfile.classList.add('bot__disabled')
-        document.querySelector('.index').textContent = 'Победа!!!'
-        userLevel.innerHTML = 'Уровень:' + Number(localStorage.getItem('level'))
-        userBalance.innerHTML = 'Баланс:' + Number(localStorage.getItem('balance'))
-        userScore.innerHTML = 'Опыт:' + Number(localStorage.getItem('score'))
-
-    }
-})
+}
 
 
-
-
-
-
-//===================================================================================
-botLegs.addEventListener('click', () => {
-    const kf = (max, min) => {
-        const maxAttack = max + user.attack
-        const minAttack = min + user.attack
-        return Math.random() * (maxAttack - minAttack) + minAttack
-    }
-
-    const critUser = Math.ceil(Math.random()*100)
-    const userDamage = Math.ceil(Math.random() * (40 - 5) + 5) - user.protection
-    const legsDamage = Math.ceil(Math.random() * kf(30, 15))
-    if (user.health <= 0) {
-        user.gameOver()
-        botProfile.classList.add('bot__disabled')
-        document.querySelector('.index').textContent = 'Ты проиграл...'
-
-    }
-    else if (bot.health > 0) {
-        const dodge = Math.ceil(Math.random() * 100)
-        
-        if (dodge >= 75 - bot.dexterity + user.dexterity + user.accuracy) {
-            let newDiv = document.createElement('div')
-            newDiv.classList.add('bot__info-attack')
-            newDiv.innerHTML = 'Промах'
-            botProfile.appendChild(newDiv)
-            user.atached(userDamage)
-            user.setHealth()
-            user.getHealth()
-            userHP.innerHTML = user.getHealth()
-            setTimeout(() => {
-                newDiv.classList.remove('bot__info-attack')
-                newDiv.innerHTML = ''
-            }, 300)
-        } else {
-            if (critUser >= 100 - user.critical) {
-                bot.attached(legsDamage * 2)
-                user.atached(userDamage)
-                botHealth.innerHTML = bot.health
-                user.setHealth()
-                user.getHealth()
-                let newDiv = document.createElement('div')
-                newDiv.classList.add('bot__info-attack')
-                newDiv.innerHTML = 'Крит ' + '-' + legsDamage*2
-                botProfile.appendChild(newDiv)
-                
-                setTimeout(() => {
-                    newDiv.classList.remove('bot__info-attack')
-                    newDiv.innerHTML = ''
-                }, 300)
-                userHP.innerHTML = user.getHealth()
-                userHealth.innerHTML = 'Здоровье:' + Number(localStorage.getItem('health'))
-            } else {
-                bot.attached(legsDamage)
-                user.atached(userDamage)
-                botHealth.innerHTML = bot.health
-                user.setHealth()
-                user.getHealth()
-                let newDiv = document.createElement('div')
-                newDiv.classList.add('bot__info-attack')
-                newDiv.innerHTML = '-' + legsDamage
-                botProfile.appendChild(newDiv)
-                
-                setTimeout(() => {
-                    newDiv.classList.remove('bot__info-attack')
-                    newDiv.innerHTML = ''
-                }, 300)
-                userHP.innerHTML = user.getHealth()
-                userHealth.innerHTML = 'Здоровье:' + Number(localStorage.getItem('health'))
-            }
-           
-        }
-
-        return
-    } else {
-        user.win(3, exp)
-        user.setBalance()
-        user.getBalance()
-        user.setScore()
-        user.getScore()
-        user.setLevel()
-        user.getLevel()
-        botProfile.classList.add('bot__disabled')
-        document.querySelector('.index').textContent = 'Победа!!!'
-        userLevel.innerHTML = 'Уровень:' + Number(localStorage.getItem('level'))
-        userBalance.innerHTML = 'Баланс:' + Number(localStorage.getItem('balance'))
-        userScore.innerHTML = 'Опыт:' + Number(localStorage.getItem('score'))
-    }
-})
-
+botHead.addEventListener('click',() => {createDamage(50,30), chanceToHit(70), logicsBattle()} )
+botBody.addEventListener('click',() => {createDamage(30,10), chanceToHit(91), logicsBattle()} )
+botLegs.addEventListener('click',() => {createDamage(40,20), chanceToHit(80), logicsBattle()} )
 userHP.innerHTML = user.getHealth()
-userHealth.innerHTML = 'Здоровье:' + Number(localStorage.getItem('health'))
-userAttack.innerHTML = 'Атака:' + user.attack
-userProtection.innerHTML = 'Защита:' + user.protection
+
+
+
+
 

@@ -1,6 +1,6 @@
 
 class Hero {
-    constructor(health=60,attack=0,protection=0, level= 0, balance = 0, score = 0, dexterity = 0, accuracy = 0,critical = 0) {
+    constructor(health=60,attack=0,protection=0, level= 0, balance = 0, score = 0, dexterity = 0, accuracy = 0,critical = 10) {
         this.health = health + this.getLevel() * 10
         this.level = level
         this.attack = attack + this.getLevel()
