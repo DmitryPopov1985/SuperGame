@@ -160,7 +160,7 @@ body{
     }
 }
 .battle__page {
-    margin-top: 200px;
+   
     display: block;
     font-size: 24px;
     color: #fff;
@@ -179,3 +179,6 @@ body{
     display: none;
 }
 
+.tat {
+    margin: -194px auto 0;
+}
